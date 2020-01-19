@@ -1,6 +1,6 @@
-Name,Status,Type,Installed
-Windows 10,Current,Vendor Software,No
-Flexera,Current,SaaS,No
-TREK,Current,Custom Software,No
-HP Asset Manager,Retired,Vendor Software,No
-Boardbooks,Current,SaaS,No
+Name,Status,Type,Installed,Service Request
+Windows 10,Current,Vendor Software,Windows Alarms 10,686
+Flexera,Current,SaaS,AdminStudio 2016,633
+TREK,Current,Custom Software,Not Installed,No RAW
+HP Asset Manager,Retired,Vendor Software,eLearning Assets All 1.0,229
+Boardbooks,Current,SaaS,Not Installed,No RAW
