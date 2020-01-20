@@ -1,6 +1,8 @@
-Name,Status,Type,Installed,Service Request
-Windows 10,Current,Vendor Software,Windows Alarms 10,686
-Flexera,Current,SaaS,AdminStudio 2016,633
-TREK,Current,Custom Software,Not Installed,No RAW
-HP Asset Manager,Retired,Vendor Software,eLearning Assets All 1.0,229
-Boardbooks,Current,SaaS,Not Installed,No RAW
+Name,Description,Status,Status Date,Type,Installed Name,RAW ID,Spending Plan ID
+Microsoft Windows 10,Microsoft Windows 10 is an enterprise operating system,Current,9/7/2018,Vendor Software,"Windows 10 Enterprise, ","686, 408, ",Not Found
+Flexera,Flexera,Current,9/8/2018,SaaS,"AdminStudio 2016, InstallShield 2015, Repackager 14.0, DemoShield 7.5, AdminStudio 2015, InstallShield 2014, AdminStudio Virtualization 15.1, Quality Monitor 15.0, Quality Monitor 14.0, AdminStudio 2014, ","633, ","17/18(33), 18/19(22), 17/18(34), 18/19(40), "
+TREK,TREK,Current,9/9/2018,Custom Software,Not Found,Not Found,Not Found
+HP Asset Manager,HP Asset Manager,Retired,9/10/2018,Vendor Software,Not Found,"229, 403, ",Not Found
+Diligent Boardbooks,Diligent Boardbooks is a board communication system,Current,9/11/2018,SaaS,Not Found,"157, ","18/19(70), 17/18(26), 18/19(71), "
+Peazip,Peazip,Restricted,9/12/2018,Vendor Software,"PeaZip 6, PeaZip 6.1, ","706, ","17/18(11), "
+Adobe Acrobat,Adobe Acrobat,Current,9/13/2018,Vendor Software,"Acrobat X, Acrobat Reader X, Acrobat X Pro, Acrobat Distiller 15.0, Acrobat DC (2015), Acrobat DC (2017), Acrobat XI Pro, Acrobat Reader XI, Acrobat Reader 8, Acrobat DC (2015) Pro, ","237, ","18/19(44), "

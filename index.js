@@ -25,13 +25,12 @@ fs.createReadStream('input/ProvisionInput.csv')
 
     for (var i = 1; i < itemCount; i++)
     {
-          appArray.push({'name': results[i][0], 'status': results[i][1], 'type': results[i][2], 'installed': 'installed', 'servicerequest': 'servicerequest' })
+          appArray.push({'name': results[i][0],'description': results[i][1], 'status': results[i][2], 'statusdate': results[i][3], 'type': results[i][4], 'installedname': '', 'rawid': '', 'spendingplanid': '' })
     }
 
     getInstalledData()
 
     //////
-
     async function getInstalledData(){
 
         var appCount = appArray.length;
@@ -41,23 +40,37 @@ fs.createReadStream('input/ProvisionInput.csv')
 
             await new Promise((resolve, reject) => setTimeout(resolve, 1000));
 
-            await client.search('x', {search: appArray[i].name, top: 1}, function(err, searchResults){
+            await client.search('x', {search: appArray[i].description, top: 10}, function(err, searchResults){
+
+              var resultText = ''
 
                 if(searchResults.length > 0){
-                  installed(i-1, appArray[i-1].name, searchResults[0].questions[0])
+
+                  for (var y = 0; y < searchResults.length; y++)
+                  {
+                    if(searchResults[y]['@search.score'] >= .95){
+                      resultText += searchResults[y].questions[0] + ', '
+                    }
+                  }
+
+                  if(resultText != ''){
+                    Installed(i-1, appArray[i-1].name, resultText)
+                  }else{
+                    Installed(i-1, appArray[i-1].name, "Not Found")
+                  }
+
                 }else{
-                  installed(i-1, appArray[i-1].name, "Not Installed")
+                  Installed(i-1, appArray[i-1].name, "Not Found")
                 }
 
             });
 
           }
-          getServiceRequestData()
+          getRAWData()
     }
 
     //////
-
-    async function getServiceRequestData(){
+    async function getRAWData(){
 
         var appCount = appArray.length;
 
@@ -66,32 +79,86 @@ fs.createReadStream('input/ProvisionInput.csv')
 
             await new Promise((resolve, reject) => setTimeout(resolve, 1000));
 
-            await client.search('x', {search: appArray[i].name, top: 1}, function(err, searchResults){
+            await client.search('x', {search: appArray[i].description, top: 25}, function(err, searchResults){
+
+              var resultText = ''
 
                 if(searchResults.length > 0){
-                  ServiceRequest(i-1, appArray[i-1].name, searchResults[0].metadata_rawid)
+
+                  for (var y = 0; y < searchResults.length; y++)
+                  {
+                    if(searchResults[y]['@search.score'] >= .95){
+                      resultText += searchResults[y].metadata_rawid + ', '
+                    }
+                  }
+
+                  if(resultText != ''){
+                    RAW(i-1, appArray[i-1].name, resultText)
+                  }else{
+                    RAW(i-1, appArray[i-1].name, "Not Found")
+                  }
+
                 }else{
-                  appServiceRequest = "No"
-                  ServiceRequest(i-1, appArray[i-1].name, "No RAW")
+                  RAW(i-1, appArray[i-1].name, "Not Found")
                 }
 
             });
 
-
           }
+          getSpendingPlanData()
+        }
 
         //////
+        async function getSpendingPlanData(){
 
+            var appCount = appArray.length;
+
+              for (var i = 0; i < appCount; i++)
+              {
+
+                await new Promise((resolve, reject) => setTimeout(resolve, 1000));
+
+                await client.search('x', {search: appArray[i].description, top: 25}, function(err, searchResults){
+
+                  var resultText = ''
+
+                    if(searchResults.length > 0){
+
+                      for (var y = 0; y < searchResults.length; y++)
+                      {
+                        if(searchResults[y]['@search.score'] >= .40){
+                          resultText += searchResults[y].metadata_year + '(' + searchResults[y].metadata_itemid + ')' + ', '
+                        }
+                      }
+
+                      if(resultText != ''){
+                        SpendingPlan(i-1, appArray[i-1].name, resultText)
+                      }else{
+                        SpendingPlan(i-1, appArray[i-1].name, "Not Found")
+                      }
+
+                    }else{
+                      SpendingPlan(i-1, appArray[i-1].name, "Not Found")
+                    }
+
+                });
+
+              }
+
+        //////
         await new Promise((resolve, reject) => setTimeout(resolve, 1000));
 
         const csvWriter = createCsvWriter({
               path: 'output/ProvisionOutput.csv',
               header: [
                   {id: 'name', title: 'Name'},
+                  {id: 'description', title: 'Description'},
                   {id: 'status', title: 'Status'},
+                  {id: 'statusdate', title: 'Status Date'},
                   {id: 'type', title: 'Type'},
-                  {id: 'installed', title: 'Installed'},
-                  {id: 'servicerequest', title: 'Service Request'}
+                  {id: 'installedname', title: 'Installed Name'},
+                  {id: 'rawid', title: 'RAW ID'},
+                  {id: 'spendingplanid', title: 'Spending Plan ID'}
               ]
           });
 
@@ -101,25 +168,29 @@ fs.createReadStream('input/ProvisionInput.csv')
               });
     }
 
-
     //////
-
-    function installed(num, appName, flexeraName){
+    function Installed(num, appName, installedName){
       console.log("num: " + num)
-      console.log("appName: " + appName)
-      console.log("flexeraName: " + flexeraName)
+      console.log("App Name: " + appName)
+      console.log("Installed Name: " + installedName)
 
-      appArray[num].installed = flexeraName
-
+      appArray[num].installedname = installedName
     }
 
-    function ServiceRequest(num, appName, rawId){
+    function RAW(num, appName, rawId){
       console.log("num: " + num)
-      console.log("appName: " + appName)
-      console.log("rawId: " + rawId)
+      console.log("App Name: " + appName)
+      console.log("raw Id: " + rawId)
 
-      appArray[num].servicerequest = rawId
+      appArray[num].rawid = rawId
+    }
 
+    function SpendingPlan(num, appName, spendingPlanId){
+      console.log("num: " + num)
+      console.log("App Name: " + appName)
+      console.log("Spending Plan Id: " + spendingPlanId)
+
+      appArray[num].spendingplanid = spendingPlanId
     }
 
 });
